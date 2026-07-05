@@ -1,7 +1,7 @@
 # Plan d'action — Système Intelligent d'Automatisation Email
 
 > **Document vivant** — mis à jour à **chaque tour** de la boucle PDCA. Son état doit toujours refléter la réalité du dépôt.
-> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026
+> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026 (F1 fait)
 
 ## Comment lire / tenir ce document
 
@@ -14,18 +14,18 @@
 
 | Ordre | Feature (du FDD) | État | Critère de réussite | Tour / commit |
 |-------|------------------|------|---------------------|---------------|
-| 1 | F1 — Recevoir et enregistrer un email entrant | à faire | Un email de test envoyé à l'adresse Mailgun configurée fait apparaître une ligne dans la table Supabase des emails, avec le contenu brut et un statut « reçu » | — |
-| 2 | F2 — Classifier un email reçu (intention, urgence, contexte, profil client) | à faire | Pour un email de test, la ligne Supabase est complétée avec les 4 dimensions renseignées (aucune vide) | — |
-| 3 | F3 — Composer une réponse contextualisée pour un cas standard | à faire | Pour un email de test classé « cas standard », un brouillon de réponse cohérent avec le contenu est enregistré dans Supabase | — |
+| 1 | F1 — Recevoir et enregistrer un email entrant | fait | Un email de test **simulé en local** (script reproduisant le payload Mailgun) fait apparaître une ligne dans la table `emails` (Neon), avec le contenu et un statut « reçu » | commit cadrage + F1 |
+| 2 | F2 — Classifier un email reçu (intention, urgence, contexte, profil client) | à faire | Pour un email de test, la ligne est complétée avec les 4 dimensions renseignées (aucune vide) | — |
+| 3 | F3 — Composer une réponse contextualisée pour un cas standard | à faire | Pour un email de test classé « cas standard », un brouillon de réponse cohérent avec le contenu est enregistré en base | — |
 | 4 | F4 — Envoyer la réponse générée au client | à faire | Le brouillon généré est effectivement reçu dans la boîte de test, et le statut de l'email passe à « répondu » | — |
-| 5 | F5 — Extraire et structurer les données utiles d'un email | à faire | Pour un email de test contenant des données exploitables (ex. référence, coordonnées), ces données apparaissent structurées dans Supabase | — |
-| 6 | F6 — Créer un ticket à partir des données extraites | à faire | Un ticket est créé dans Supabase à partir des données extraites, avec un statut « ouvert » | — |
+| 5 | F5 — Extraire et structurer les données utiles d'un email | à faire | Pour un email de test contenant des données exploitables (ex. référence, coordonnées), ces données apparaissent structurées en base | — |
+| 6 | F6 — Créer un ticket à partir des données extraites | à faire | Un ticket est créé en base à partir des données extraites, avec un statut « ouvert » | — |
 | 7 | F7 — Synchroniser un ticket avec le CRM | à faire | La création du ticket déclenche un appel vérifiable à l'adaptateur CRM (log ou mock), et le statut passe à « synchronisé » | — |
-| 8 | F8 — Escalader un cas complexe vers un opérateur humain | à faire | Pour un email de test marqué complexe/sensible, le statut passe à « à escalader », visible dans Supabase, sans envoi automatique de réponse | — |
+| 8 | F8 — Escalader un cas complexe vers un opérateur humain | à faire | Pour un email de test marqué complexe/sensible, le statut passe à « à escalader », visible en base, sans envoi automatique de réponse | — |
 | — | **Déploiement Netlify** (mise en ligne — après la dernière feature) | à faire | site accessible à l'URL publique, vérifié par l'utilisateur | — |
 
 > Formuler les critères de console comme « aucune erreur **liée à notre code** » : le navigateur génère du bruit bénin (ex. 404 sur la favicon) qui ne doit pas invalider un CHECK.
-> Le CHECK de F1 à F8 se fait en envoyant un email de test et en observant le résultat dans les logs de la Function et/ou la table Supabase (via son interface web) — pas dans une page de l'app elle-même, tant que le dashboard (Should have, hors v1) n'existe pas.
+> Le CHECK de F1 à F8 se fait en simulant l'arrivée d'un email (script reproduisant le payload Mailgun envoyé à la Function locale) et en observant le résultat dans les logs de la Function et/ou la table `emails` (via `psql`) — pas dans une page de l'app elle-même, tant que le dashboard (Should have, hors v1) n'existe pas. Le vrai aller-retour avec Mailgun (compte, domaine, route entrante) n'est mis en place qu'une seule fois, au moment du déploiement — c'est lui qui sert de smoke test final.
 
 ## Journal des passes de non-régression
 

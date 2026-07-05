@@ -2,7 +2,7 @@
 
 > **Version** 0.1 · **Date** 5 juillet 2026 · **Statut** validé le 5 juillet 2026 · **Méthodologie** VibeCoding PDCA
 > Traduit les fonctionnalités du PRD (table MoSCoW) en **features-unités de construction** — des morceaux assez petits pour tenir dans un cycle PDCA chacun.
-> Dérivé du PRD **et** de l'architecture retenue dans `archi-stack.md` (webhook Mailgun → Netlify Function → Claude API → Supabase).
+> Dérivé du PRD **et** de l'architecture retenue dans `archi-stack.md` (webhook Mailgun → Netlify Function → Claude API → Neon).
 
 ## Principe de formulation
 
@@ -10,13 +10,13 @@ Chaque feature est nommée à la manière FDD : **`<action> <résultat> <objet>`
 
 Une bonne feature-unité est : **petite** (réalisable en un cycle), **testable seule** (on sait dire si elle marche), et **autonome** (elle n'exige pas qu'une autre soit finie en même temps).
 
-> Note d'architecture : ces features sont majoritairement **backend** (déclenchées par un webhook, pas par un clic dans une page). Le CHECK de chaque feature se fera en déclenchant un email de test et en observant le résultat dans les logs de la Function et/ou dans la table Supabase (via son interface web) — pas forcément dans une page de l'app elle-même, tant que le dashboard (Should have) n'existe pas encore.
+> Note d'architecture : ces features sont majoritairement **backend** (déclenchées par un webhook, pas par un clic dans une page). Le CHECK de chaque feature se fera en déclenchant un email de test et en observant le résultat dans les logs de la Function et/ou dans la table `emails` (via `psql`) — pas forcément dans une page de l'app elle-même, tant que le dashboard (Should have) n'existe pas encore.
 
 ## Features issues des « Must have »
 
 | # | Feature (`action résultat objet`) | Issue de (PRD) | Note |
 |---|-----------------------------------|----------------|------|
-| 1 | Recevoir et enregistrer un email entrant | — | Brique technique (point d'entrée webhook Mailgun → Supabase) ; pas un Must have du PRD en soi, mais nécessaire pour construire toutes les suivantes |
+| 1 | Recevoir et enregistrer un email entrant | — | Brique technique (point d'entrée webhook Mailgun → Neon) ; pas un Must have du PRD en soi, mais nécessaire pour construire toutes les suivantes |
 | 2 | Classifier un email reçu (intention, urgence, contexte, profil client) | Classification intelligente des messages | Un seul appel Claude API, sortie structurée sur les 4 dimensions |
 | 3 | Composer une réponse contextualisée pour un cas standard | Génération de réponses contextualisées | Dépend de la classification (F2) |
 | 4 | Envoyer la réponse générée au client | Génération de réponses contextualisées | Séparée de la composition (F3) pour pouvoir vérifier le texte avant d'activer l'envoi réel |
