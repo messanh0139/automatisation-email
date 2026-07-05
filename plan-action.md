@@ -1,7 +1,7 @@
 # Plan d'action — Système Intelligent d'Automatisation Email
 
 > **Document vivant** — mis à jour à **chaque tour** de la boucle PDCA. Son état doit toujours refléter la réalité du dépôt.
-> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026 (F3 fait)
+> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026 (F4 fait)
 
 ## Comment lire / tenir ce document
 
@@ -17,7 +17,7 @@
 | 1 | F1 — Recevoir et enregistrer un email entrant | fait | Un email de test **simulé en local** (script reproduisant le payload Mailgun) fait apparaître une ligne dans la table `emails` (Neon), avec le contenu et un statut « reçu » | commit cadrage + F1 |
 | 2 | F2 — Classifier un email reçu (intention, urgence, contexte, profil client) | fait | Pour un email de test, la ligne est complétée avec les 4 dimensions renseignées (aucune vide) | commit F2 |
 | 3 | F3 — Composer une réponse contextualisée pour un cas standard | fait | Pour un email de test classé « cas standard », un brouillon de réponse cohérent avec le contenu est enregistré en base | commit F3 |
-| 4 | F4 — Envoyer la réponse générée au client | à faire | Le brouillon généré est effectivement reçu dans la boîte de test, et le statut de l'email passe à « répondu » | — |
+| 4 | F4 — Envoyer la réponse générée au client | fait | Le brouillon généré est effectivement reçu dans la boîte de test, et le statut de l'email passe à « répondu » | commit F4 |
 | 5 | F5 — Extraire et structurer les données utiles d'un email | à faire | Pour un email de test contenant des données exploitables (ex. référence, coordonnées), ces données apparaissent structurées en base | — |
 | 6 | F6 — Créer un ticket à partir des données extraites | à faire | Un ticket est créé en base à partir des données extraites, avec un statut « ouvert » | — |
 | 7 | F7 — Synchroniser un ticket avec le CRM | à faire | La création du ticket déclenche un appel vérifiable à l'adaptateur CRM (log ou mock), et le statut passe à « synchronisé » | — |

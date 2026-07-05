@@ -16,6 +16,7 @@ Netlify Functions (serverless) + webhook email entrant + LLM (API OpenAI) pour l
 | Langage / framework backend | Node.js + Netlify Functions | logique de classification, extraction, décision, appels API externes |
 | Interface / rendu | React + Vite | dashboard de supervision (Should have) : liste des emails traités, statuts, escalades |
 | Réception des emails | Webhook provider transactionnel — Mailgun (*Inbound Routes*) | déclenche la Function à chaque email entrant |
+| Envoi des emails (réponses) | SMTP direct (`nodemailer`, compte email personnel) | envoi du brouillon de réponse (F4) au client |
 | IA de classification/génération | API OpenAI | intention, urgence, contexte, profil client + brouillon de réponse |
 | Données | Neon (Postgres serverless, driver HTTP) | historique des échanges, tickets, statuts, traçabilité RGPD |
 | Intégration CRM | Adaptateur HTTP générique (le CRM précis reste une question ouverte du PRD) | création/synchronisation des fiches et tickets côté CRM |
@@ -61,5 +62,6 @@ Dashboard React (Netlify) ──lecture/écriture──> Neon
 - Clés API sensibles (OpenAI, Neon, provider email, CRM) : jamais commitées dans le repo, uniquement en variables d'environnement Netlify (et en local dans un `.env` ignoré par git).
 - Neon a été choisi plutôt que Supabase pour rester « codé de bout en bout » (schéma en SQL versionné, requêtes en code) plutôt que piloté via une interface web dédiée.
 - Le CRM cible reste à trancher (question ouverte du PRD) ; l'adaptateur générique sera spécialisé une fois ce choix fait.
+- Réception (Mailgun, webhook) et envoi (SMTP direct via un compte email personnel) utilisent deux mécanismes différents pour l'instant — Mailgun et Resend se sont avérés payants sans palier gratuit exploitable pour la v1. Un fournisseur unique pour les deux sens sera retranché avant la mise en ligne, une fois les coûts réels comparés.
 - Si le volume réel d'emails s'avère élevé, la bascule vers un backend dédié (option écartée ci-dessus) est le premier levier à envisager — ne pas changer d'infra sans GO explicite.
 - **Dette RGPD assumée :** le projet Neon (`automatisation_email`) est hébergé en région `AWS US East 1`, pas en UE — Neon ne permet pas de changer la région d'un projet existant. Acceptable pour cette phase de dev/v1 sans données clients réelles ; à corriger (recréation d'un projet en région UE + migration) avant toute mise en production avec de vraies données.

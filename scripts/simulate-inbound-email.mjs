@@ -1,6 +1,8 @@
 // Simule l'arrivée d'un email Mailgun en local, pour le CHECK de F1 (pas de vrai compte Mailgun nécessaire à ce stade).
+// Pour tester F4 (envoi réel), passe ta propre adresse en argument : node scripts/simulate-inbound-email.mjs toi@example.com
+const senderOverride = process.argv[2];
 const fields = {
-  sender: "client.test@example.com",
+  sender: senderOverride || "client.test@example.com",
   recipient: "support@monentreprise.com",
   subject: "Test — problème de facturation",
   "body-plain": "Bonjour, je n'ai pas reçu ma facture de juin. Merci de me la renvoyer.",

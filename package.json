@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "netlify dev",
-    "test:inbound": "node scripts/simulate-inbound-email.mjs"
+    "test:inbound": "node scripts/simulate-inbound-email.mjs",
+    "send:reply": "node scripts/trigger-send-reply.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.5",
+    "nodemailer": "^6.9.15",
     "openai": "^4.70.0",
     "parse-multipart-data": "^1.5.0"
   },
