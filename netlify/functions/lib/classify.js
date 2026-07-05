@@ -20,8 +20,12 @@ const CLASSIFICATION_SCHEMA = {
       type: "string",
       description: "Profil déduit du ton et du contenu du message (ex: nouveau contact, client mécontent, client fidèle...)",
     },
+    cas_standard: {
+      type: "boolean",
+      description: "true si une réponse automatique standard est appropriée ; false si le cas est complexe, ambigu, sensible (juridique, financier) ou nécessite un jugement humain",
+    },
   },
-  required: ["intention", "urgence", "contexte", "profil_client"],
+  required: ["intention", "urgence", "contexte", "profil_client", "cas_standard"],
   additionalProperties: false,
 };
 

@@ -10,9 +10,12 @@ create table if not exists emails (
   raw_payload jsonb,
   status text not null default 'reçu',
   received_at timestamptz not null default now(),
-  -- F2 : résultat de la classification (Claude API)
+  -- F2 : résultat de la classification (API OpenAI)
   intention text,
   urgence text,
   contexte text,
-  profil_client text
+  profil_client text,
+  cas_standard boolean,
+  -- F3 : brouillon de réponse (cas standard uniquement)
+  brouillon_reponse text
 );

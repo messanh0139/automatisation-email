@@ -4,6 +4,7 @@
 import { neon } from "@neondatabase/serverless";
 import multipart from "parse-multipart-data";
 import { classifyEmail } from "./lib/classify.js";
+import { composeReply } from "./lib/compose.js";
 
 const sql = neon(process.env.DATABASE_URL);
 
@@ -51,23 +52,45 @@ export async function handler(event) {
     return { statusCode: 500, body: "Erreur enregistrement" };
   }
 
+  let classification;
   try {
-    const classification = await classifyEmail({ subject, bodyPlain });
+    classification = await classifyEmail({ subject, bodyPlain });
     await sql`
       update emails
       set intention = ${classification.intention},
           urgence = ${classification.urgence},
           contexte = ${classification.contexte},
           profil_client = ${classification.profil_client},
+          cas_standard = ${classification.cas_standard},
           status = 'classifié'
       where id = ${emailId}
     `;
-    console.log("[inbound-email] email", emailId, "classifié avec succès");
+    console.log("[inbound-email] email", emailId, "classifié avec succès, cas_standard:", classification.cas_standard);
   } catch (err) {
     console.error("[inbound-email] échec classification pour l'email", emailId, ":", err.message);
     // L'email reste enregistré avec le statut "reçu" — pas de perte de données,
     // juste une classification en échec à retraiter plus tard.
     return { statusCode: 200, body: "OK (email enregistré, classification en échec)" };
+  }
+
+  if (!classification.cas_standard) {
+    console.log("[inbound-email] email", emailId, "jugé non standard — pas de brouillon (escalade à venir en F8)");
+    return { statusCode: 200, body: "OK (cas non standard, en attente d'escalade)" };
+  }
+
+  try {
+    const draft = await composeReply({ subject, bodyPlain, classification });
+    await sql`
+      update emails
+      set brouillon_reponse = ${draft},
+          status = 'brouillon_pret'
+      where id = ${emailId}
+    `;
+    console.log("[inbound-email] email", emailId, "brouillon de réponse prêt");
+  } catch (err) {
+    console.error("[inbound-email] échec composition pour l'email", emailId, ":", err.message);
+    // L'email reste enregistré et classifié — juste la composition à retraiter plus tard.
+    return { statusCode: 200, body: "OK (email classifié, composition en échec)" };
   }
 
   return { statusCode: 200, body: "OK" };
