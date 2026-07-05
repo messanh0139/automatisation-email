@@ -14,7 +14,7 @@
 
 | Ordre | Feature (du FDD) | État | Critère de réussite | Tour / commit |
 |-------|------------------|------|---------------------|---------------|
-| 1 | F1 — Recevoir et enregistrer un email entrant | fait | Un email de test **simulé en local** (script reproduisant le payload Mailgun) fait apparaître une ligne dans la table `emails` (Neon), avec le contenu et un statut « reçu » | commit cadrage + F1 |
+| 1 | F1 — Recevoir et enregistrer un email entrant | fait | Un vrai email envoyé à la boîte de test, relevé manuellement en local (déclenchement du poll IMAP), fait apparaître une ligne dans la table `emails` (Neon), avec le contenu et un statut « reçu » | commit cadrage + F1, révisé (Mailgun → IMAP) |
 | 2 | F2 — Classifier un email reçu (intention, urgence, contexte, profil client) | fait | Pour un email de test, la ligne est complétée avec les 4 dimensions renseignées (aucune vide) | commit F2 |
 | 3 | F3 — Composer une réponse contextualisée pour un cas standard | fait | Pour un email de test classé « cas standard », un brouillon de réponse cohérent avec le contenu est enregistré en base | commit F3 |
 | 4 | F4 — Envoyer la réponse générée au client | fait | Le brouillon généré est effectivement reçu dans la boîte de test, et le statut de l'email passe à « répondu » | commit F4 |
@@ -25,7 +25,7 @@
 | — | **Déploiement Netlify** (mise en ligne — après la dernière feature) | à faire | site accessible à l'URL publique, vérifié par l'utilisateur | — |
 
 > Formuler les critères de console comme « aucune erreur **liée à notre code** » : le navigateur génère du bruit bénin (ex. 404 sur la favicon) qui ne doit pas invalider un CHECK.
-> Le CHECK de F1 à F8 se fait en simulant l'arrivée d'un email (script reproduisant le payload Mailgun envoyé à la Function locale) et en observant le résultat dans les logs de la Function et/ou la table `emails` (via `psql`) — pas dans une page de l'app elle-même, tant que le dashboard (Should have, hors v1) n'existe pas. Le vrai aller-retour avec Mailgun (compte, domaine, route entrante) n'est mis en place qu'une seule fois, au moment du déploiement — c'est lui qui sert de smoke test final.
+> Le CHECK de F1 à F8 se fait en envoyant un vrai email à la boîte de test puis en déclenchant manuellement le poll IMAP en local (`npm run poll:inbox`), et en observant le résultat dans les logs de la Function et/ou la table `emails` (via `psql`) — pas dans une page de l'app elle-même, tant que le dashboard (Should have, hors v1) n'existe pas. En production, la relève se fait automatiquement toutes les 5 minutes (Netlify Scheduled Function) — le smoke test de mise en ligne consistera à envoyer un email réel et attendre la prochaine relève planifiée.
 
 ## Journal des passes de non-régression
 

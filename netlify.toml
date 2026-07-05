@@ -6,11 +6,6 @@
   port = 8888
 
 [[redirects]]
-  from = "/api/inbound-email"
-  to = "/.netlify/functions/inbound-email"
-  status = 200
-
-[[redirects]]
   from = "/api/send-reply"
   to = "/.netlify/functions/send-reply"
   status = 200

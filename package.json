@@ -5,15 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "netlify dev",
-    "test:inbound": "node scripts/simulate-inbound-email.mjs",
-    "test:inbound:complexe": "node scripts/simulate-inbound-email-complexe.mjs",
+    "poll:inbox": "node scripts/trigger-poll-inbox.mjs",
     "send:reply": "node scripts/trigger-send-reply.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.5",
+    "@netlify/functions": "^2.8.2",
+    "imapflow": "^1.0.176",
+    "mailparser": "^3.7.2",
     "nodemailer": "^6.9.15",
-    "openai": "^4.70.0",
-    "parse-multipart-data": "^1.5.0"
+    "openai": "^4.70.0"
   },
   "devDependencies": {
     "netlify-cli": "^17.0.0"
