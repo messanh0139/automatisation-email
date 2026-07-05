@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "netlify dev",
     "test:inbound": "node scripts/simulate-inbound-email.mjs",
+    "test:inbound:complexe": "node scripts/simulate-inbound-email-complexe.mjs",
     "send:reply": "node scripts/trigger-send-reply.mjs"
   },
   "dependencies": {

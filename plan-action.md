@@ -1,7 +1,7 @@
 # Plan d'action — Système Intelligent d'Automatisation Email
 
 > **Document vivant** — mis à jour à **chaque tour** de la boucle PDCA. Son état doit toujours refléter la réalité du dépôt.
-> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026 (F7 fait)
+> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026 (F8 fait — toutes les features Must have sont fait)
 
 ## Comment lire / tenir ce document
 
@@ -21,7 +21,7 @@
 | 5 | F5 — Extraire et structurer les données utiles d'un email | fait | Pour un email de test contenant des données exploitables (ex. référence, coordonnées), ces données apparaissent structurées en base | commit F5 |
 | 6 | F6 — Créer un ticket à partir des données extraites | fait | Un ticket est créé en base à partir des données extraites, avec un statut « ouvert » | commit F6 |
 | 7 | F7 — Synchroniser un ticket avec le CRM | fait | La création du ticket déclenche un appel vérifiable à l'adaptateur CRM (HubSpot), et le statut passe à « synchronisé » | commit F7 |
-| 8 | F8 — Escalader un cas complexe vers un opérateur humain | à faire | Pour un email de test marqué complexe/sensible, le statut passe à « à escalader », visible en base, sans envoi automatique de réponse | — |
+| 8 | F8 — Escalader un cas complexe vers un opérateur humain | fait | Pour un email de test marqué complexe/sensible, le statut passe à « à escalader », visible en base, sans envoi automatique de réponse | commit F8 |
 | — | **Déploiement Netlify** (mise en ligne — après la dernière feature) | à faire | site accessible à l'URL publique, vérifié par l'utilisateur | — |
 
 > Formuler les critères de console comme « aucune erreur **liée à notre code** » : le navigateur génère du bruit bénin (ex. 404 sur la favicon) qui ne doit pas invalider un CHECK.

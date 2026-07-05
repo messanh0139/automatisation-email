@@ -91,8 +91,9 @@ export async function handler(event) {
   }
 
   if (!classification.cas_standard) {
-    console.log("[inbound-email] email", emailId, "jugé non standard — pas de brouillon (escalade à venir en F8)");
-    return { statusCode: 200, body: "OK (cas non standard, en attente d'escalade)" };
+    await sql`update emails set status = 'à escalader' where id = ${emailId}`;
+    console.log("[inbound-email] email", emailId, "escaladé (cas jugé non standard)");
+    return { statusCode: 200, body: "OK (cas non standard, escaladé)" };
   }
 
   try {
