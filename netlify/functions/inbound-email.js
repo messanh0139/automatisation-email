@@ -6,6 +6,7 @@ import multipart from "parse-multipart-data";
 import { classifyEmail } from "./lib/classify.js";
 import { composeReply } from "./lib/compose.js";
 import { extractData } from "./lib/extract.js";
+import { createTicketIfNeeded } from "./lib/ticket.js";
 
 const sql = neon(process.env.DATABASE_URL);
 
@@ -82,9 +83,11 @@ export async function handler(event) {
       where id = ${emailId}
     `;
     console.log("[inbound-email] email", emailId, "données extraites:", donnees.length);
+
+    await createTicketIfNeeded(emailId, donnees);
   } catch (err) {
-    console.error("[inbound-email] échec extraction pour l'email", emailId, ":", err.message);
-    // Ne bloque pas la suite (composition/envoi) : l'extraction sera à retraiter plus tard si besoin.
+    console.error("[inbound-email] échec extraction/ticket pour l'email", emailId, ":", err.message);
+    // Ne bloque pas la suite (composition/envoi) : l'extraction/le ticket seront à retraiter plus tard si besoin.
   }
 
   if (!classification.cas_standard) {

@@ -21,3 +21,12 @@ create table if not exists emails (
   -- F5 : données utiles extraites (liste de paires label/valeur, structure libre)
   donnees_extraites jsonb
 );
+
+-- F6 : ticket créé à partir des données extraites (uniquement si l'email en contient).
+create table if not exists tickets (
+  id bigint generated always as identity primary key,
+  email_id bigint not null references emails (id),
+  donnees jsonb not null,
+  statut text not null default 'ouvert',
+  created_at timestamptz not null default now()
+);

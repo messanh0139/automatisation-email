@@ -1,7 +1,7 @@
 # Plan d'action — Système Intelligent d'Automatisation Email
 
 > **Document vivant** — mis à jour à **chaque tour** de la boucle PDCA. Son état doit toujours refléter la réalité du dépôt.
-> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026 (F5 fait)
+> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026 (F6 fait)
 
 ## Comment lire / tenir ce document
 
@@ -19,7 +19,7 @@
 | 3 | F3 — Composer une réponse contextualisée pour un cas standard | fait | Pour un email de test classé « cas standard », un brouillon de réponse cohérent avec le contenu est enregistré en base | commit F3 |
 | 4 | F4 — Envoyer la réponse générée au client | fait | Le brouillon généré est effectivement reçu dans la boîte de test, et le statut de l'email passe à « répondu » | commit F4 |
 | 5 | F5 — Extraire et structurer les données utiles d'un email | fait | Pour un email de test contenant des données exploitables (ex. référence, coordonnées), ces données apparaissent structurées en base | commit F5 |
-| 6 | F6 — Créer un ticket à partir des données extraites | à faire | Un ticket est créé en base à partir des données extraites, avec un statut « ouvert » | — |
+| 6 | F6 — Créer un ticket à partir des données extraites | fait | Un ticket est créé en base à partir des données extraites, avec un statut « ouvert » | commit F6 |
 | 7 | F7 — Synchroniser un ticket avec le CRM | à faire | La création du ticket déclenche un appel vérifiable à l'adaptateur CRM (log ou mock), et le statut passe à « synchronisé » | — |
 | 8 | F8 — Escalader un cas complexe vers un opérateur humain | à faire | Pour un email de test marqué complexe/sensible, le statut passe à « à escalader », visible en base, sans envoi automatique de réponse | — |
 | — | **Déploiement Netlify** (mise en ligne — après la dernière feature) | à faire | site accessible à l'URL publique, vérifié par l'utilisateur | — |
