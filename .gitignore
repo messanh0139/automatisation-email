@@ -1,0 +1,13 @@
+# Dépendances
+node_modules/
+
+# Build / déploiement
+dist/
+.netlify/
+
+# Secrets
+.env
+.env.*
+
+# Fichiers de travail étrangers à l'app (skill VibeCoding)
+vibecoding-copilote-main.zip

@@ -1,0 +1,51 @@
+# Plan d'action — Système Intelligent d'Automatisation Email
+
+> **Document vivant** — mis à jour à **chaque tour** de la boucle PDCA. Son état doit toujours refléter la réalité du dépôt.
+> **Méthodologie** VibeCoding PDCA · **Statut cadrage** validé le 5 juillet 2026 · **Dernière mise à jour** 5 juillet 2026
+
+## Comment lire / tenir ce document
+
+- L'agent prend la **première feature « à faire »** dans l'ordre du tableau (les *Must have* d'abord).
+- Il la passe en **« en cours »** au début du tour, puis en **« fait »** après le **commit local** (Check OK + GO #2).
+- États possibles : `à faire` · `en cours` · `fait`.
+- Tant qu'il reste des `à faire`, la boucle continue. Toutes les features en `fait` → on passe à la **clôture** (déploiement Netlify + bilan).
+
+## Tableau de pilotage
+
+| Ordre | Feature (du FDD) | État | Critère de réussite | Tour / commit |
+|-------|------------------|------|---------------------|---------------|
+| 1 | F1 — Recevoir et enregistrer un email entrant | à faire | Un email de test envoyé à l'adresse Mailgun configurée fait apparaître une ligne dans la table Supabase des emails, avec le contenu brut et un statut « reçu » | — |
+| 2 | F2 — Classifier un email reçu (intention, urgence, contexte, profil client) | à faire | Pour un email de test, la ligne Supabase est complétée avec les 4 dimensions renseignées (aucune vide) | — |
+| 3 | F3 — Composer une réponse contextualisée pour un cas standard | à faire | Pour un email de test classé « cas standard », un brouillon de réponse cohérent avec le contenu est enregistré dans Supabase | — |
+| 4 | F4 — Envoyer la réponse générée au client | à faire | Le brouillon généré est effectivement reçu dans la boîte de test, et le statut de l'email passe à « répondu » | — |
+| 5 | F5 — Extraire et structurer les données utiles d'un email | à faire | Pour un email de test contenant des données exploitables (ex. référence, coordonnées), ces données apparaissent structurées dans Supabase | — |
+| 6 | F6 — Créer un ticket à partir des données extraites | à faire | Un ticket est créé dans Supabase à partir des données extraites, avec un statut « ouvert » | — |
+| 7 | F7 — Synchroniser un ticket avec le CRM | à faire | La création du ticket déclenche un appel vérifiable à l'adaptateur CRM (log ou mock), et le statut passe à « synchronisé » | — |
+| 8 | F8 — Escalader un cas complexe vers un opérateur humain | à faire | Pour un email de test marqué complexe/sensible, le statut passe à « à escalader », visible dans Supabase, sans envoi automatique de réponse | — |
+| — | **Déploiement Netlify** (mise en ligne — après la dernière feature) | à faire | site accessible à l'URL publique, vérifié par l'utilisateur | — |
+
+> Formuler les critères de console comme « aucune erreur **liée à notre code** » : le navigateur génère du bruit bénin (ex. 404 sur la favicon) qui ne doit pas invalider un CHECK.
+> Le CHECK de F1 à F8 se fait en envoyant un email de test et en observant le résultat dans les logs de la Function et/ou la table Supabase (via son interface web) — pas dans une page de l'app elle-même, tant que le dashboard (Should have, hors v1) n'existe pas.
+
+## Journal des passes de non-régression
+
+> À remplir au feeling, tous les N tours. Trace ce qui a été re-testé **en local**. (Le smoke test de prod n'a lieu qu'à la mise en ligne, en clôture.)
+
+| Date | Après feature # | Non-régression (local) | Anomalie / action |
+|------|-----------------|------------------------|-------------------|
+| — | — | — | — |
+
+## Pour aller plus loin (backlog)
+
+> Rempli en **clôture**, après la mise en ligne : pistes d'évolution proposées et retenues pour un futur cycle (repêchage des *Could have* et *Questions ouvertes* du PRD inclus).
+
+| Idée de feature | Valeur | Effort estimé |
+|-----------------|--------|---------------|
+| — | — | — |
+
+## Notes de session
+
+> Reprise de chantier : relire le PRD, l'archi-stack, le FDD, puis ce plan. Reprendre à la première feature « à faire » ou « en cours ».
+
+- Cadrage initial posé le 5 juillet 2026. Les features Should/Could (F9 à F13 du FDD) ne figurent pas encore dans le tableau de pilotage — elles rejoindront un futur tour via la section « Pour aller plus loin ».
+- Questions ouvertes du PRD à garder en tête pendant la boucle : CRM précis à intégrer (impacte F7), seuil exact d'« urgence » (impacte F2/F8/F11), langue(s) à supporter (impacte F13), volumes attendus (impacte le choix d'architecture si la charge dépasse les capacités des Functions serverless).
