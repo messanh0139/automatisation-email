@@ -28,5 +28,7 @@ create table if not exists tickets (
   email_id bigint not null references emails (id),
   donnees jsonb not null,
   statut text not null default 'ouvert',
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  -- F7 : identifiant du ticket côté CRM, une fois synchronisé
+  crm_id text
 );
