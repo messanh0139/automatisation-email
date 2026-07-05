@@ -5,7 +5,7 @@
 
 ## Approche retenue
 
-Netlify Functions (serverless) + webhook email entrant + LLM (Claude API) pour la classification et la génération, avec Neon (Postgres serverless) pour la persistance et un dashboard React sur le même site.
+Netlify Functions (serverless) + webhook email entrant + LLM (API OpenAI) pour la classification et la génération, avec Neon (Postgres serverless) pour la persistance et un dashboard React sur le même site.
 
 **Pourquoi celle-ci :** elle couvre tous les *Must have* du PRD (classification, génération de réponses, extraction, tickets, sync CRM, escalade) avec une seule pile JS/TS et un seul dépôt, cohérente avec la mise en ligne finale unique de la méthode VibeCoding (un seul `push` Netlify, pas d'infra à gérer en parallèle). Neon est retenu plutôt qu'un Postgres classique parce que son driver HTTP (`@neondatabase/serverless`) évite la saturation de connexions typique des Functions serverless (éphémères, potentiellement très nombreuses en parallèle) ; le schéma reste 100% du code SQL versionné dans le repo, pas une interface web à configurer. C'est le compromis le plus simple pour une v1, quitte à revoir l'infra si le volume réel s'avère plus élevé que prévu (voir Notes).
 
@@ -16,7 +16,7 @@ Netlify Functions (serverless) + webhook email entrant + LLM (Claude API) pour l
 | Langage / framework backend | Node.js + Netlify Functions | logique de classification, extraction, décision, appels API externes |
 | Interface / rendu | React + Vite | dashboard de supervision (Should have) : liste des emails traités, statuts, escalades |
 | Réception des emails | Webhook provider transactionnel — Mailgun (*Inbound Routes*) | déclenche la Function à chaque email entrant |
-| IA de classification/génération | API Claude (Anthropic) | intention, urgence, contexte, profil client + brouillon de réponse |
+| IA de classification/génération | API OpenAI | intention, urgence, contexte, profil client + brouillon de réponse |
 | Données | Neon (Postgres serverless, driver HTTP) | historique des échanges, tickets, statuts, traçabilité RGPD |
 | Intégration CRM | Adaptateur HTTP générique (le CRM précis reste une question ouverte du PRD) | création/synchronisation des fiches et tickets côté CRM |
 | Hébergement / déploiement | Netlify | mise en ligne en **étape finale** (après la dernière feature), puis auto à chaque `push` ultérieur |
@@ -34,7 +34,7 @@ Netlify Functions (serverless) + webhook email entrant + LLM (Claude API) pour l
 ```
 Email entrant → Webhook provider → Netlify Function (/api/inbound-email)
                                         │
-                                        ├─ Appel Claude API : classification + extraction + brouillon de réponse
+                                        ├─ Appel API OpenAI : classification + extraction + brouillon de réponse
                                         │
                                         ├─ Écriture Neon (email, statut, données extraites)
                                         │
@@ -58,7 +58,7 @@ Dashboard React (Netlify) ──lecture/écriture──> Neon
 
 ## Notes
 
-- Clés API sensibles (Claude, Neon, provider email, CRM) : jamais commitées dans le repo, uniquement en variables d'environnement Netlify (et en local dans un `.env` ignoré par git).
+- Clés API sensibles (OpenAI, Neon, provider email, CRM) : jamais commitées dans le repo, uniquement en variables d'environnement Netlify (et en local dans un `.env` ignoré par git).
 - Neon a été choisi plutôt que Supabase pour rester « codé de bout en bout » (schéma en SQL versionné, requêtes en code) plutôt que piloté via une interface web dédiée.
 - Le CRM cible reste à trancher (question ouverte du PRD) ; l'adaptateur générique sera spécialisé une fois ce choix fait.
 - Si le volume réel d'emails s'avère élevé, la bascule vers un backend dédié (option écartée ci-dessus) est le premier levier à envisager — ne pas changer d'infra sans GO explicite.

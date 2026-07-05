@@ -3,6 +3,7 @@
 // à ajouter avant le GO MISE EN LIGNE.
 import { neon } from "@neondatabase/serverless";
 import multipart from "parse-multipart-data";
+import { classifyEmail } from "./lib/classify.js";
 
 const sql = neon(process.env.DATABASE_URL);
 
@@ -25,24 +26,49 @@ export async function handler(event) {
   }
   console.log("[inbound-email] champs extraits:", Object.keys(fields));
 
+  const subject = fields["subject"] || null;
+  const bodyPlain = fields["body-plain"] || null;
+  let emailId;
+
   try {
-    await sql`
+    const rows = await sql`
       insert into emails (mailgun_message_id, from_address, to_address, subject, body_plain, raw_payload, status)
       values (
         ${fields["Message-Id"] || null},
         ${fields["sender"] || null},
         ${fields["recipient"] || null},
-        ${fields["subject"] || null},
-        ${fields["body-plain"] || null},
+        ${subject},
+        ${bodyPlain},
         ${JSON.stringify(fields)},
         'reçu'
       )
+      returning id
     `;
+    emailId = rows[0].id;
+    console.log("[inbound-email] email enregistré avec succès, id:", emailId);
   } catch (err) {
     console.error("[inbound-email] échec insertion Neon:", err.message);
     return { statusCode: 500, body: "Erreur enregistrement" };
   }
 
-  console.log("[inbound-email] email enregistré avec succès");
+  try {
+    const classification = await classifyEmail({ subject, bodyPlain });
+    await sql`
+      update emails
+      set intention = ${classification.intention},
+          urgence = ${classification.urgence},
+          contexte = ${classification.contexte},
+          profil_client = ${classification.profil_client},
+          status = 'classifié'
+      where id = ${emailId}
+    `;
+    console.log("[inbound-email] email", emailId, "classifié avec succès");
+  } catch (err) {
+    console.error("[inbound-email] échec classification pour l'email", emailId, ":", err.message);
+    // L'email reste enregistré avec le statut "reçu" — pas de perte de données,
+    // juste une classification en échec à retraiter plus tard.
+    return { statusCode: 200, body: "OK (email enregistré, classification en échec)" };
+  }
+
   return { statusCode: 200, body: "OK" };
 }

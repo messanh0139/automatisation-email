@@ -2,7 +2,7 @@
 
 > **Version** 0.1 · **Date** 5 juillet 2026 · **Statut** validé le 5 juillet 2026 · **Méthodologie** VibeCoding PDCA
 > Traduit les fonctionnalités du PRD (table MoSCoW) en **features-unités de construction** — des morceaux assez petits pour tenir dans un cycle PDCA chacun.
-> Dérivé du PRD **et** de l'architecture retenue dans `archi-stack.md` (webhook Mailgun → Netlify Function → Claude API → Neon).
+> Dérivé du PRD **et** de l'architecture retenue dans `archi-stack.md` (webhook Mailgun → Netlify Function → API OpenAI → Neon).
 
 ## Principe de formulation
 
@@ -17,7 +17,7 @@ Une bonne feature-unité est : **petite** (réalisable en un cycle), **testable 
 | # | Feature (`action résultat objet`) | Issue de (PRD) | Note |
 |---|-----------------------------------|----------------|------|
 | 1 | Recevoir et enregistrer un email entrant | — | Brique technique (point d'entrée webhook Mailgun → Neon) ; pas un Must have du PRD en soi, mais nécessaire pour construire toutes les suivantes |
-| 2 | Classifier un email reçu (intention, urgence, contexte, profil client) | Classification intelligente des messages | Un seul appel Claude API, sortie structurée sur les 4 dimensions |
+| 2 | Classifier un email reçu (intention, urgence, contexte, profil client) | Classification intelligente des messages | Un seul appel API OpenAI, sortie structurée sur les 4 dimensions |
 | 3 | Composer une réponse contextualisée pour un cas standard | Génération de réponses contextualisées | Dépend de la classification (F2) |
 | 4 | Envoyer la réponse générée au client | Génération de réponses contextualisées | Séparée de la composition (F3) pour pouvoir vérifier le texte avant d'activer l'envoi réel |
 | 5 | Extraire et structurer les données utiles d'un email | Extraction et structuration des données | Ex. coordonnées, référence commande, éléments métier cités dans le message |

@@ -9,5 +9,10 @@ create table if not exists emails (
   body_plain text,
   raw_payload jsonb,
   status text not null default 'reçu',
-  received_at timestamptz not null default now()
+  received_at timestamptz not null default now(),
+  -- F2 : résultat de la classification (Claude API)
+  intention text,
+  urgence text,
+  contexte text,
+  profil_client text
 );

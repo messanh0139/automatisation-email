@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.5",
+    "openai": "^4.70.0",
     "parse-multipart-data": "^1.5.0"
   },
   "devDependencies": {
