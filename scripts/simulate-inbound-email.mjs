@@ -5,7 +5,7 @@ const fields = {
   sender: senderOverride || "client.test@example.com",
   recipient: "support@monentreprise.com",
   subject: "Test — problème de facturation",
-  "body-plain": "Bonjour, je n'ai pas reçu ma facture de juin. Merci de me la renvoyer.",
+  "body-plain": "Bonjour, je n'ai pas reçu ma facture de juin pour ma commande n°45213. Vous pouvez me joindre au 06 12 34 56 78 si besoin. Merci de me la renvoyer.",
   "Message-Id": `<test-${Date.now()}@example.com>`,
 };
 

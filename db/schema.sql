@@ -17,5 +17,7 @@ create table if not exists emails (
   profil_client text,
   cas_standard boolean,
   -- F3 : brouillon de réponse (cas standard uniquement)
-  brouillon_reponse text
+  brouillon_reponse text,
+  -- F5 : données utiles extraites (liste de paires label/valeur, structure libre)
+  donnees_extraites jsonb
 );

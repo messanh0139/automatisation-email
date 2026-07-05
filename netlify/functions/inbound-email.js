@@ -5,6 +5,7 @@ import { neon } from "@neondatabase/serverless";
 import multipart from "parse-multipart-data";
 import { classifyEmail } from "./lib/classify.js";
 import { composeReply } from "./lib/compose.js";
+import { extractData } from "./lib/extract.js";
 
 const sql = neon(process.env.DATABASE_URL);
 
@@ -71,6 +72,19 @@ export async function handler(event) {
     // L'email reste enregistré avec le statut "reçu" — pas de perte de données,
     // juste une classification en échec à retraiter plus tard.
     return { statusCode: 200, body: "OK (email enregistré, classification en échec)" };
+  }
+
+  try {
+    const donnees = await extractData({ subject, bodyPlain });
+    await sql`
+      update emails
+      set donnees_extraites = ${JSON.stringify(donnees)}
+      where id = ${emailId}
+    `;
+    console.log("[inbound-email] email", emailId, "données extraites:", donnees.length);
+  } catch (err) {
+    console.error("[inbound-email] échec extraction pour l'email", emailId, ":", err.message);
+    // Ne bloque pas la suite (composition/envoi) : l'extraction sera à retraiter plus tard si besoin.
   }
 
   if (!classification.cas_standard) {
