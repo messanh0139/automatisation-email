@@ -1,9 +1,17 @@
 // F1 (révisé) : relève périodique de la boîte Gmail (IMAP) — remplace l'ancien webhook Mailgun.
 // Même compte que l'envoi (F4) : aucun nouveau compte externe nécessaire.
+//
+// GARDE-FOU CRITIQUE : ne traite jamais l'historique de la boîte, seulement les emails
+// arrivés depuis IMAP_SINCE_DATE. Incident du 6 juillet 2026 : une boîte Gmail réelle avec
+// des milliers d'emails non lus a été traitée par erreur (filtrage sur \Seen uniquement),
+// créant de faux tickets CRM. Le filtre par date est la protection contre une récidive,
+// indépendante du statut lu/non lu.
 import { schedule } from "@netlify/functions";
 import { ImapFlow } from "imapflow";
 import { simpleParser } from "mailparser";
 import { processEmail } from "./lib/process-email.js";
+
+const LOT_MAX = 3; // sécurité : chaque email prend ~10-15s (Claude + CRM + SMTP), la Function a 30s max
 
 async function pollInbox() {
   const client = new ImapFlow({
@@ -22,10 +30,23 @@ async function pollInbox() {
   let traites = 0;
 
   try {
-    const uids = await client.search({ seen: false }, { uid: true });
-    console.log("[poll-inbox] emails non lus trouvés:", uids.length);
+    const depuis = new Date(process.env.IMAP_SINCE_DATE);
+    const tousLesUids = await client.search({ seen: false, since: depuis }, { uid: true });
+    const uids = tousLesUids.slice(0, LOT_MAX);
+    console.log(
+      "[poll-inbox] emails non lus depuis",
+      process.env.IMAP_SINCE_DATE,
+      ":",
+      tousLesUids.length,
+      "— traités ce tour:",
+      uids.length,
+    );
 
-    for await (const message of client.fetch(uids, { source: true, envelope: true })) {
+    if (uids.length === 0) {
+      return;
+    }
+
+    for await (const message of client.fetch(uids, { source: true, envelope: true }, { uid: true })) {
       const parsed = await simpleParser(message.source);
 
       await processEmail({
